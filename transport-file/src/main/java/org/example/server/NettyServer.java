@@ -15,10 +15,6 @@ public class NettyServer {
     private EventLoopGroup childGroup = new NioEventLoopGroup();
     private Channel channel;
 
-    public static void main(String[] args) {
-        new NettyServer().bing(7397);
-    }
-
     public ChannelFuture bing(int port) {
         ChannelFuture channelFuture = null;
         try {

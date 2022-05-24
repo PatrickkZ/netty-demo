@@ -14,18 +14,6 @@ import java.io.File;
 
 public class NettyClient {
 
-    public static void main(String[] args) {
-        //启动客户端
-        ChannelFuture channelFuture = new NettyClient().connect("127.0.0.1", 7397);
-
-        //文件信息
-        File file = new File("C:\\Users\\zhouj2\\Downloads\\aclImdb_v1\\train\\unsup.rar");
-        FileTransferProtocol fileTransferProtocol = MsgUtil.buildRequestTransferFile(file.getAbsolutePath(), file.getName(), file.length());
-
-        //发送信息；请求传输文件
-        channelFuture.channel().writeAndFlush(fileTransferProtocol);
-    }
-
     //配置服务端NIO线程组
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
     private Channel channel;
