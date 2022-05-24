@@ -16,6 +16,10 @@ public class App
 {
     public static void main( String[] args )
     {
+        if (args.length == 0) {
+            System.out.println("need a transport file");
+            return;
+        }
         // start server
         new NettyServer().bing(7397);
 
@@ -23,7 +27,7 @@ public class App
         ChannelFuture channelFuture = new NettyClient().connect("127.0.0.1", 7397);
 
         //file info
-        File file = new File("C:\\Users\\zhouj2\\Desktop\\example_data.rar");
+        File file = new File(args[0]);
         FileTransferProtocol fileTransferProtocol = MsgUtil.buildRequestTransferFile(file.getAbsolutePath(), file.getName(), file.length());
 
         //发送信息；请求传输文件
