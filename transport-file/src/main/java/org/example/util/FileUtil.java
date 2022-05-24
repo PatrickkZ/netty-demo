@@ -59,7 +59,7 @@ public class FileUtil {
         FileBurstInstruct fileBurstInstruct = new FileBurstInstruct();
         fileBurstInstruct.setStatus(Constants.FileStatus.CENTER);            //Constants.FileStatus ｛0开始、1中间、2结尾、3完成｝
         fileBurstInstruct.setClientFileUrl(fileBurstData.getFileUrl());      //客户端文件URL
-        fileBurstInstruct.setReadPosition(fileBurstData.getEndPos() + 1);    //读取位置
+        fileBurstInstruct.setReadPosition(fileBurstData.getEndPos());    //读取位置
 
         return fileBurstInstruct;
     }
