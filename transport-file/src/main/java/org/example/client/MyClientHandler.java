@@ -53,7 +53,7 @@ public class MyClientHandler extends ChannelInboundHandlerAdapter {
                     System.exit(-1);
                     return;
                 }
-                FileBurstData fileBurstData = FileUtil.readFile(fileBurstInstruct.getClientFileUrl(), fileBurstInstruct.getReadPosition());
+                FileBurstData fileBurstData = FileUtil.mappedReadFile(fileBurstInstruct.getClientFileUrl(), fileBurstInstruct.getReadPosition());
                 ctx.writeAndFlush(MsgUtil.buildTransferData(fileBurstData));
                 System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "(客户端传输文件信息)FILE NAME: " + fileBurstData.getFileName() + "  SIZE(byte)：" + (fileBurstData.getEndPos() - fileBurstData.getBeginPos()));
                 break;

@@ -5,8 +5,14 @@ import org.example.domain.FileBurstData;
 import org.example.domain.FileBurstInstruct;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class FileUtil {
 
@@ -64,4 +70,43 @@ public class FileUtil {
         return fileBurstInstruct;
     }
 
+    public static FileBurstData mappedReadFile(String fileUrl, Integer readPosition) throws IOException {
+        File file = new File(fileUrl);
+        int fileSize = (int) file.length();
+        byte[] buffer = new byte[fileSize];
+
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")){
+            FileChannel fileChannel = randomAccessFile.getChannel();
+            MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileSize);
+            mappedByteBuffer.get(buffer);
+        }
+
+        FileBurstData fileInfo = new FileBurstData();
+        fileInfo.setFileUrl(fileUrl);
+        fileInfo.setFileName(file.getName());
+        fileInfo.setBeginPos(readPosition);
+        fileInfo.setEndPos(readPosition + fileSize);
+
+        fileInfo.setBytes(buffer);
+        fileInfo.setStatus(Constants.FileStatus.END);
+        return fileInfo;
+    }
+
+    public static FileBurstInstruct mappedWriteFile(String baseUrl, FileBurstData fileBurstData) throws IOException {
+        File file = new File(baseUrl + "copy_" + fileBurstData.getFileName());
+
+        // delete old file, later create a new one
+        file.delete();
+
+        byte[] data  = fileBurstData.getBytes();
+        int size = data.length;
+
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw")) {
+            FileChannel fileChannel = randomAccessFile.getChannel();
+            MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, size);
+            mappedByteBuffer.put(data);
+        }
+
+        return new FileBurstInstruct(Constants.FileStatus.COMPLETE);
+    }
 }

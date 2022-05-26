@@ -64,18 +64,18 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
                 break;
             case 2:
                 FileBurstData fileBurstData = (FileBurstData) fileTransferProtocol.getTransferObj();
-                FileBurstInstruct fileBurstInstruct = FileUtil.writeFile("./", fileBurstData);
+                FileBurstInstruct fileBurstInstruct = FileUtil.mappedWriteFile("./", fileBurstData);
 
                 //保存断点续传信息
                 CacheUtil.burstDataMap.put(fileBurstData.getFileName(), fileBurstInstruct);
 
-                ctx.writeAndFlush(MsgUtil.buildTransferInstruct(fileBurstInstruct));
-                System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "接收客户端传输文件数据。" + JSON.toJSONString(fileBurstData));
+                // System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "接收客户端传输文件数据。" + JSON.toJSONString(fileBurstData));
 
                 //传输完成删除断点信息
                 if (fileBurstInstruct.getStatus() == Constants.FileStatus.COMPLETE) {
                     CacheUtil.burstDataMap.remove(fileBurstData.getFileName());
                 }
+                ctx.writeAndFlush(MsgUtil.buildTransferInstruct(fileBurstInstruct));
                 break;
             default:
                 break;
